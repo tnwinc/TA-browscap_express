@@ -61,8 +61,6 @@ def browser_lookup(datafile,http_user_agent):
 				best_regex = ua_regex
 				out['browser_data_raw'] = line
 				out['browser_data'] = data_to_dict(header,bits)
-		#default fromcache to true. This function has no idea if it was cache or not
-		out['browser_data']['ua_fromcache'] = 'true'
 		return out
 
 #is_known_browser solves the problem of not recording Generic or Default
@@ -105,6 +103,7 @@ if __name__ == '__main__':
 	http_user_agent = row[idx]
 	print "check the cache"
 	browser_data = browser_lookup('browscap_lite.csv',http_user_agent)
+	browser_data['browser_data']['ua_fromcache'] = 'true'
 
 	#no mas? check the full dataset
 	if (browser_data['browser_data']['ua_browser'] == 'DefaultProperties'):
