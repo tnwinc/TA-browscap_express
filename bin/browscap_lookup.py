@@ -16,12 +16,9 @@ def data_to_dict(headers, data):
 		out[x] = data[i]
 	#pprint.pprint(out)
 	return out
-def logtofile(msg):
-	with open('b.log','a') as f:
-		f.write(msg + '\n')
+	
 #the red meat
 def browser_lookup(datafile,http_user_agent):	
-	#logtofile('starting ' + http_user_agent)
 	with open(datafile, 'r') as f:
 		junk = f.readline()	#first line is junk
 		junk = f.readline() #second line is junk
@@ -34,39 +31,48 @@ def browser_lookup(datafile,http_user_agent):
 			header = row
 		
 		#repackage the defaults into something useful
-		out = dict()
-		out['browser_data_raw'] = defaults
 		csv_reader = csv.reader( [ defaults ] )
 		for row in csv_reader:
 			defaults = row
+
+		#initialize a blank out object with default files
+		out = dict()
+		out['browser_data_raw'] = defaults
 		out['browser_data'] = data_to_dict(header,defaults)
-		#the rest of the file
+		#todo - if http_user_agent is null (or short), just return the default
+		#best_regex tracks the regex which will eventually be used for a match
 		best_regex = ''
-		
+
+		#with the headers handled, start to enumerate data
 		for line in f:
 			csv_reader = csv.reader( [ line ] )
 			for row in csv_reader:
 				bits = row
-			#print bits[0]
+			
+			#convert the browscap string to a regex string. The length
+			#comparison solves the problem of finding the "best" match. In the
+			#ini file, the best matches come first, but the CSV is a mess.
+			#In this case, enumerate the entire file, and the longest regex
+			#string will have the most detail and therefore is the best match
+			#This logic lifted without shame from pybrowscap
 			ua_regex = '^{0}$'.format(re.escape(bits[0]))
 			ua_regex = ua_regex.replace('\\?', '.').replace('\\*', '.*?')
 			if (re.search(ua_regex,http_user_agent)) and len(ua_regex) > len(best_regex):
 				best_regex = ua_regex
-				#out = dict()
 				out['browser_data_raw'] = line
 				out['browser_data'] = data_to_dict(header,bits)
-				#return out
-				
-				#browser_data_raw = line
-				#print ua_regex + " " + browser_data_raw
-				#baz = data_to_dict(header,browser_data)
+		#default fromcache to true. This function has no idea if it was cache or not
 		out['browser_data']['ua_fromcache'] = 'true'
 		return out
 
-
+#is_known_browser solves the problem of not recording Generic or Default
+#browsers. Since the cache file is always checked first, if a generic was
+#returned, then results would be skewed and the master file never checked.
 def is_known_browser(browser_data):
 	out = True
-	#if (browser_data['ua_version'] == '0.0'): out = False
+	#Bots start with generic (ie Generic Java Crawler), but browsers have
+	#the name first (ie Firefox Generic). The leading space prevents caching
+	#generic mainline browsers
 	if (" Generic" in browser_data['ua_browser']): out = False
 	if ("Default" in browser_data['ua_browser']): out = False
 	return out
@@ -98,7 +104,6 @@ if __name__ == '__main__':
         # We only care about the user-agent field - everything else is filled in
         http_user_agent = row[idx]
 		#check the cache
-	#print "checking cache"
 	browser_data = browser_lookup('browscap_lite.csv',http_user_agent)
 
 	#no mas? check the full dataset
@@ -106,18 +111,11 @@ if __name__ == '__main__':
 		#print "checking master"
 		browser_data = browser_lookup('browscap.csv',http_user_agent)
 		browser_data['browser_data']['ua_fromcache'] = 'false'
-		#pprint.pprint(browser_data['browser_data'])
 		if (is_known_browser(browser_data['browser_data'])):
-			#print browser_data['browser_data_raw']
 			with open('browscap_lite.csv','a') as browscap_file:
 				browscap_file.write(browser_data['browser_data_raw'])
 		
-	#pprint.pprint(browser_data['browser_data'])
-
-	#results = get_browser_info(browscap, http_user_agent)
 	results = browser_data['browser_data']
-	#logtofile('building output')
-	#logtofile(results)
         # Now write it out
         orow = []
         for header_name in header:
@@ -127,4 +125,3 @@ if __name__ == '__main__':
             else:
                 orow.append(results[header_name])
         w.writerow(orow)
-	#logtofile('we have a winner!')
