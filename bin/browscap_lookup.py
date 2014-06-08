@@ -39,7 +39,11 @@ def browser_lookup(datafile,http_user_agent):
 		out = dict()
 		out['browser_data_raw'] = defaults
 		out['browser_data'] = data_to_dict(header,defaults)
-		#todo - if http_user_agent is null (or short), just return the default
+		
+		#for short, or unspecified UA strings, just return the default
+		if len(http_user_agent) < 2:
+			return out
+
 		#best_regex tracks the regex which will eventually be used for a match
 		best_regex = ''
 
