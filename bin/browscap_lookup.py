@@ -101,14 +101,14 @@ if __name__ == '__main__':
             w.writerow(row)
             continue
 		
-        # We only care about the user-agent field - everything else is filled in
-        http_user_agent = row[idx]
-		#check the cache
+	# We only care about the user-agent field - everything else is filled in
+	http_user_agent = row[idx]
+	print "check the cache"
 	browser_data = browser_lookup('browscap_lite.csv',http_user_agent)
 
 	#no mas? check the full dataset
 	if (browser_data['browser_data']['ua_browser'] == 'DefaultProperties'):
-		#print "checking master"
+		print "checking master"
 		browser_data = browser_lookup('browscap.csv',http_user_agent)
 		browser_data['browser_data']['ua_fromcache'] = 'false'
 		if (is_known_browser(browser_data['browser_data'])):
@@ -116,12 +116,12 @@ if __name__ == '__main__':
 				browscap_file.write(browser_data['browser_data_raw'])
 		
 	results = browser_data['browser_data']
-        # Now write it out
-        orow = []
-        for header_name in header:
-            #logtofile('h: ' + header_name)
-            if (header_name == "http_user_agent"):
-                orow.append(http_user_agent)
-            else:
-                orow.append(results[header_name])
-        w.writerow(orow)
+	# Now write it out
+	orow = []
+	for header_name in header:
+		#logtofile('h: ' + header_name)
+		if (header_name == "http_user_agent"):
+			orow.append(http_user_agent)
+		else:
+			orow.append(results[header_name])
+	w.writerow(orow)
