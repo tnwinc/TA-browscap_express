@@ -3,7 +3,7 @@ import sys
 import csv
 import StringIO
 import pprint
-
+import os
 #this converts an array of keys and an array of values into a dict. Probably
 #there is a native Python way to do this. I do PHP. *shrugs*
 def data_to_dict(headers, data):
@@ -106,16 +106,16 @@ if __name__ == '__main__':
 	# We only care about the user-agent field - everything else is filled in
 	http_user_agent = row[idx]
 	#print "check the cache"
-	browser_data = browser_lookup('browscap_lite.csv',http_user_agent)
+	browser_data = browser_lookup(os.path.dirname(os.path.realpath(__file__)) + '\\browscap_lite.csv',http_user_agent)
 	browser_data['browser_data']['ua_fromcache'] = 'true'
 
 	#no mas? check the full dataset
 	if (browser_data['browser_data']['ua_browser'] == 'DefaultProperties'):
 		#print "checking master"
-		browser_data = browser_lookup('browscap.csv',http_user_agent)
+		browser_data = browser_lookup(os.path.dirname(os.path.realpath(__file__)) + '\\browscap.csv',http_user_agent)
 		browser_data['browser_data']['ua_fromcache'] = 'false'
 		if (is_known_browser(browser_data['browser_data'])):
-			with open('browscap_lite.csv','a') as browscap_file:
+			with open(os.path.dirname(os.path.realpath(__file__)) + '\\browscap_lite.csv','a') as browscap_file:
 				browscap_file.write(browser_data['browser_data_raw'])
 		
 	results = browser_data['browser_data']
