@@ -98,7 +98,7 @@ if __name__ == '__main__':
 		blacklist = open(scriptpath + '\\blacklist.txt').read().splitlines()
 		defaultbrowser = browser_lookup(browscapdata_lite,"-")
 		defaultbrowser = defaultbrowser['browser_data']
-		defaultbrowser['ua_fromcache'] = 'false'
+		defaultbrowser['ua_fromcache'] = 'blacklist'
 	
 	r = csv.reader(sys.stdin)
 	w = csv.writer(sys.stdout)
@@ -141,6 +141,7 @@ if __name__ == '__main__':
 					browscapdata_lite.append(browser_data['browser_data_raw'])
 					with open(scriptpath + '\\browscap_lite.csv','a') as browscap_file:
 						browscap_file.write(browser_data['browser_data_raw'])
+					browscap_file.close()
 			results = browser_data['browser_data']
 			uacache[http_user_agent] = results
 		# Now write it out
