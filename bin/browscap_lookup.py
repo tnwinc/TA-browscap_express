@@ -88,7 +88,14 @@ if __name__ == '__main__':
 	#read the databases into memory
 	browscapdata_lite = open(scriptpath + '\\browscap_lite.csv').readlines()
 	browscapdata = open(scriptpath + '\\browscap.csv').readlines()
-
+	
+	#initialize a blank blacklist
+	blacklist = []
+	if os.path.isfile(scriptpath + '\\blacklist.txt'): 
+		blacklist = open(scriptpath + '\\blacklist.txt').read().splitlines()
+		defaultbrowser = browser_lookup(browscapdata_lite,"Impossible blacklisted browser")
+		defaultbrowser = defaultbrowser['browser_data']
+		defaultbrowser['ua_fromcache'] = 'false'
 	r = csv.reader(sys.stdin)
 	w = csv.writer(sys.stdout)
 	have_header = False
@@ -111,7 +118,10 @@ if __name__ == '__main__':
 		#print "**** " + http_user_agent 
 
 		#check the inmem cache
-		if http_user_agent in uacache:
+		if http_user_agent in blacklist:
+			results = defaultbrowser
+			print "its blacklisted!"
+		elif http_user_agent in uacache:
 			results = uacache[http_user_agent]
 		else:
 			#print "check the cache"
