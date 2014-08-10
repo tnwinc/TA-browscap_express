@@ -106,21 +106,26 @@ if __name__ == '__main__':
 
 		# We only care about the user-agent field - everything else is filled in
 		http_user_agent = row[idx]
+		#print "**** " + http_user_agent 
 
-		#print "check the cache"
-		browser_data = browser_lookup(os.path.dirname(os.path.realpath(__file__)) + '\\browscap_lite.csv',http_user_agent)
-		browser_data['browser_data']['ua_fromcache'] = 'true'
+		#check the inmem cache
+		if http_user_agent in uacache:
+			results = uacache[http_user_agent]
+		else:
+			#print "check the cache"
+			browser_data = browser_lookup(os.path.dirname(os.path.realpath(__file__)) + '\\browscap_lite.csv',http_user_agent)
+			browser_data['browser_data']['ua_fromcache'] = 'true'
 
-		#no mas? check the full dataset
-		if (browser_data['browser_data']['ua_browser'] == 'DefaultProperties'):
-			#print "checking master"
-			browser_data = browser_lookup(os.path.dirname(os.path.realpath(__file__)) + '\\browscap.csv',http_user_agent)
-			browser_data['browser_data']['ua_fromcache'] = 'false'
-			if (is_known_browser(browser_data['browser_data'])):
-				with open(os.path.dirname(os.path.realpath(__file__)) + '\\browscap_lite.csv','a') as browscap_file:
-					browscap_file.write(browser_data['browser_data_raw'])
-
-		results = browser_data['browser_data']
+			#no mas? check the full dataset
+			if (browser_data['browser_data']['ua_browser'] == 'DefaultProperties'):
+				#print "checking master"
+				browser_data = browser_lookup(os.path.dirname(os.path.realpath(__file__)) + '\\browscap.csv',http_user_agent)
+				browser_data['browser_data']['ua_fromcache'] = 'false'
+				if (is_known_browser(browser_data['browser_data'])):
+					with open(os.path.dirname(os.path.realpath(__file__)) + '\\browscap_lite.csv','a') as browscap_file:
+						browscap_file.write(browser_data['browser_data_raw'])
+			results = browser_data['browser_data']
+			uacache[http_user_agent] = results
 		# Now write it out
 		orow = []
 		for header_name in header:
