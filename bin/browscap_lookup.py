@@ -85,46 +85,48 @@ def is_known_browser(browser_data):
 #
 if __name__ == '__main__':
 
-    # init the browscap class
-    r = csv.reader(sys.stdin)
-    w = csv.writer(sys.stdout)
-    have_header = False
-    header = []
-    idx = -1
-    for row in r:
-        if (have_header == False):
-            header = row
-            have_header = True
-            z = 0
-            for h in row:
-                if (h == "http_user_agent"):
-                    idx = z
-                z = z + 1
-            w.writerow(row)
-            continue
-		
-	# We only care about the user-agent field - everything else is filled in
-	http_user_agent = row[idx]
-	#print "check the cache"
-	browser_data = browser_lookup(os.path.dirname(os.path.realpath(__file__)) + '\\browscap_lite.csv',http_user_agent)
-	browser_data['browser_data']['ua_fromcache'] = 'true'
+	# init the browscap class
+	r = csv.reader(sys.stdin)
+	w = csv.writer(sys.stdout)
+	have_header = False
+	header = []
+	idx = -1
+	uacache = dict()
+	for row in r:
+		if (have_header == False):
+			header = row
+			have_header = True
+			z = 0
+			for h in row:
+				if (h == "http_user_agent"):
+					idx = z
+				z = z + 1
+			w.writerow(row)
+			continue
 
-	#no mas? check the full dataset
-	if (browser_data['browser_data']['ua_browser'] == 'DefaultProperties'):
-		#print "checking master"
-		browser_data = browser_lookup(os.path.dirname(os.path.realpath(__file__)) + '\\browscap.csv',http_user_agent)
-		browser_data['browser_data']['ua_fromcache'] = 'false'
-		if (is_known_browser(browser_data['browser_data'])):
-			with open(os.path.dirname(os.path.realpath(__file__)) + '\\browscap_lite.csv','a') as browscap_file:
-				browscap_file.write(browser_data['browser_data_raw'])
-		
-	results = browser_data['browser_data']
-	# Now write it out
-	orow = []
-	for header_name in header:
-		#logtofile('h: ' + header_name)
-		if (header_name == "http_user_agent"):
-			orow.append(http_user_agent)
-		else:
-			orow.append(results[header_name])
-	w.writerow(orow)
+		# We only care about the user-agent field - everything else is filled in
+		http_user_agent = row[idx]
+
+		#print "check the cache"
+		browser_data = browser_lookup(os.path.dirname(os.path.realpath(__file__)) + '\\browscap_lite.csv',http_user_agent)
+		browser_data['browser_data']['ua_fromcache'] = 'true'
+
+		#no mas? check the full dataset
+		if (browser_data['browser_data']['ua_browser'] == 'DefaultProperties'):
+			#print "checking master"
+			browser_data = browser_lookup(os.path.dirname(os.path.realpath(__file__)) + '\\browscap.csv',http_user_agent)
+			browser_data['browser_data']['ua_fromcache'] = 'false'
+			if (is_known_browser(browser_data['browser_data'])):
+				with open(os.path.dirname(os.path.realpath(__file__)) + '\\browscap_lite.csv','a') as browscap_file:
+					browscap_file.write(browser_data['browser_data_raw'])
+
+		results = browser_data['browser_data']
+		# Now write it out
+		orow = []
+		for header_name in header:
+			#logtofile('h: ' + header_name)
+			if (header_name == "http_user_agent"):
+				orow.append(http_user_agent)
+			else:
+				orow.append(results[header_name])
+		w.writerow(orow)
