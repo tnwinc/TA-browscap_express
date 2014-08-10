@@ -4,6 +4,8 @@ import csv
 import StringIO
 import pprint
 import os
+import shutil
+
 #this converts an array of keys and an array of values into a dict. Probably
 #there is a native Python way to do this. I do PHP. *shrugs*
 def data_to_dict(headers, data):
@@ -84,7 +86,8 @@ if __name__ == '__main__':
 
 	uacache = dict()
 	scriptpath = os.path.dirname(os.path.realpath(__file__))
-	
+	#check for and initialize browscap_lite.csv
+	if not os.path.isfile(scriptpath + '\\browscap_lite.csv'): shutil.copy2(scriptpath + '\\browscap_lite.csv.example', scriptpath + '\\browscap_lite.csv')
 	#read the databases into memory
 	browscapdata_lite = open(scriptpath + '\\browscap_lite.csv').readlines()
 	browscapdata = open(scriptpath + '\\browscap.csv').readlines()
@@ -93,9 +96,10 @@ if __name__ == '__main__':
 	blacklist = []
 	if os.path.isfile(scriptpath + '\\blacklist.txt'): 
 		blacklist = open(scriptpath + '\\blacklist.txt').read().splitlines()
-		defaultbrowser = browser_lookup(browscapdata_lite,"Impossible blacklisted browser")
+		defaultbrowser = browser_lookup(browscapdata_lite,"-")
 		defaultbrowser = defaultbrowser['browser_data']
 		defaultbrowser['ua_fromcache'] = 'false'
+	
 	r = csv.reader(sys.stdin)
 	w = csv.writer(sys.stdout)
 	have_header = False
@@ -120,7 +124,6 @@ if __name__ == '__main__':
 		#check the inmem cache
 		if http_user_agent in blacklist:
 			results = defaultbrowser
-			print "its blacklisted!"
 		elif http_user_agent in uacache:
 			results = uacache[http_user_agent]
 		else:
