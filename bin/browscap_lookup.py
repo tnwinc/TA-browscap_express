@@ -89,6 +89,10 @@ if __name__ == '__main__':
 	#check for and initialize browscap_lite.csv
 	if not os.path.isfile(scriptpath + '\\browscap_lite.csv'): shutil.copy2(scriptpath + '\\browscap_lite.csv.example', scriptpath + '\\browscap_lite.csv')
 	#read the databases into memory
+	f = open(scriptpath + '\\browscap_lite.csv')
+	browscapdata_lite = f.readlines()
+	f.close()
+	
 	browscapdata_lite = open(scriptpath + '\\browscap_lite.csv').readlines()
 	browscapdata = open(scriptpath + '\\browscap.csv').readlines()
 	
