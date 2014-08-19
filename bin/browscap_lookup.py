@@ -86,20 +86,25 @@ if __name__ == '__main__':
 
 	uacache = dict()
 	scriptpath = os.path.dirname(os.path.realpath(__file__))
+
+	#make lite version local $SPLUNK/var/run/splunk to minimize NFS access and concurrency problem in distributed env
+	cachepath = scriptpath
+	if ('SPLUNK_HOME' in os.environ):
+		runpath = os.path.join(os.environ['SPLUNK_HOME'], 'var', 'run', 'splunk')
+		if (os.path.isdir(runpath)):
+			cachepath = runpath
+
 	#check for and initialize browscap_lite.csv
-	if not os.path.isfile(scriptpath + '\\browscap_lite.csv'): shutil.copy2(scriptpath + '\\browscap_lite.csv.example', scriptpath + '\\browscap_lite.csv')
+	if not os.path.isfile(os.path.join(cachepath, 'browscap_lite.csv')): 
+		shutil.copy2(os.path.join(scriptpath, 'browscap_lite.csv.example'), os.path.join(cachepath, 'browscap_lite.csv'))
 	#read the databases into memory
-	f = open(scriptpath + '\\browscap_lite.csv')
-	browscapdata_lite = f.readlines()
-	f.close()
-	
-	browscapdata_lite = open(scriptpath + '\\browscap_lite.csv').readlines()
-	browscapdata = open(scriptpath + '\\browscap.csv').readlines()
+	browscapdata_lite = open(os.path.join(cachepath, 'browscap_lite.csv')).readlines()
+	browscapdata = open(os.path.join(scriptpath, 'browscap.csv')).readlines()
 	
 	#initialize a blank blacklist
 	blacklist = []
-	if os.path.isfile(scriptpath + '\\blacklist.txt'): 
-		blacklist = open(scriptpath + '\\blacklist.txt').read().splitlines()
+	if os.path.isfile(os.path.join(scriptpath, 'blacklist.txt')): 
+		blacklist = open(os.path.join(scriptpath, 'blacklist.txt')).read().splitlines()
 		defaultbrowser = browser_lookup(browscapdata_lite,"-")
 		defaultbrowser = defaultbrowser['browser_data']
 		defaultbrowser['ua_fromcache'] = 'blacklist'
@@ -143,7 +148,7 @@ if __name__ == '__main__':
 				if (is_known_browser(browser_data['browser_data'])):
 					#write a match back to the currently cached browscapdata_lite and to it's backing file
 					browscapdata_lite.append(browser_data['browser_data_raw'])
-					with open(scriptpath + '\\browscap_lite.csv','a') as browscap_file:
+					with open(os.path.join(cachepath, 'browscap_lite.csv'),'a') as browscap_file:
 						browscap_file.write(browser_data['browser_data_raw'])
 					browscap_file.close()
 			results = browser_data['browser_data']
