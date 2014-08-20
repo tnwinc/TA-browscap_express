@@ -5,7 +5,7 @@ import StringIO
 import pprint
 import os
 import shutil
-
+import ConfigParser
 #this converts an array of keys and an array of values into a dict. Probably
 #there is a native Python way to do this. I do PHP. *shrugs*
 def data_to_dict(headers, data):
@@ -93,6 +93,12 @@ if __name__ == '__main__':
 		runpath = os.path.join(os.environ['SPLUNK_HOME'], 'var', 'run', 'splunk')
 		if (os.path.isdir(runpath)):
 			cachepath = runpath
+
+			#override the defaults with an ini
+	if os.path.isfile(os.path.join(scriptpath, 'browscap_lookup.ini')):
+		config = ConfigParser.RawConfigParser()
+		config.read(os.path.join(scriptpath, 'browscap_lookup.ini'))
+		if config.has_option('config','cachepath'): cachepath = config.get('config','cachepath')
 
 	#check for and initialize browscap_lite.csv
 	if not os.path.isfile(os.path.join(cachepath, 'browscap_lite.csv')): 
