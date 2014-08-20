@@ -52,6 +52,8 @@ To install:
    wget -O browscap.csv http://browscap.org/stream?q=BrowsCapCSV  
 4.  Restart Splunk.
 
+The optional configuration file, browscap_lookup.ini, allows changing the default location of the browscap_lite.csv (cache) file.
+
 # Usage #
 To use:  
 The lookup expects a field named "http_user_agent". In the search bar,
@@ -66,5 +68,15 @@ TA-browscap_express builds a cache of user agents which exist in your data. The 
 
 Not all browsers are cached. Generic and default browsers are deliberately not cached. To search for browsers which are always looking up in the browscap file try adding "| search ua_fromcache=false". You can either exlcude these UA strings at the start, or better, file a bug with the browscap project on github to get the UA string added to the library.
 
+# Cache file #
+The cache file, browscap_lite.csv, is checked first, speeding up subsequent searches. The location of the file is as follows:
+1.  The script directory. This is the default location, unless:
+2.  SPLUNK_HOME/var/run/splunk if the SPLUNK_HOME environment variable is defined, this location will be used, unless:
+3.  It's overridden in browscap_lite.ini
+
+# Blacklist file #
+The optional file, blacklist.txt, contains a list of UA strings, one per line, which should not be checked. This is good for managing custom or blatantly forged UA strings that you don't want to waste time going to the main browscap file for, since they'll always return default/generic.
+
 CHANGE LOG  
 20130607 v1: 	Initial
+20140820 v2:	Better
