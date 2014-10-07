@@ -58,7 +58,9 @@ The optional configuration file, browscap_lookup.ini, allows changing the defaul
 To use:  
 The lookup expects a field named "http_user_agent". In the search bar,
 you can run something like:
-index=iis | lookup browscap_lookup_express http_user_agent
+index=iis | eval http_user_agent=urldecode(cs_User_Agent) | lookup browscap_lookup_express http_user_agent
+
+The UserAgent string *must* be urldecoded. 
 
 This should produce the additional fields.
 
