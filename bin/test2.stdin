@@ -1,4 +1,4 @@
-http_user_agent,ua_activexcontrols,ua_agentid,ua_alpha,ua_aolversion,ua_backgroundsounds,ua_beta,ua_browser,ua_comment,ua_cookies,ua_crawler,ua_cssversion,ua_frames,ua_iframes,ua_ismobiledevice,ua_issyndicationreader,ua_istablet,ua_javaapplets,ua_javascript,ua_litemode,ua_majorver,ua_masterparent,ua_minorver,ua_parent,ua_platform,ua_platform_version,ua_propertyname,ua_tables,ua_vbscript,ua_version,ua_win16,ua_win32,ua_win64
+http_user_agent,ua_activexcontrols,ua_alpha,ua_aolversion,ua_backgroundsounds,ua_beta,ua_browser,ua_comment,ua_cookies,ua_crawler,ua_cssversion,ua_frames,ua_iframes,ua_ismobiledevice,ua_issyndicationreader,ua_istablet,ua_javaapplets,ua_javascript,ua_litemode,ua_majorver,ua_masterparent,ua_minorver,ua_parent,ua_platform,ua_platform_version,ua_propertyname,ua_tables,ua_vbscript,ua_version,ua_win16,ua_win32,ua_win64
 "Android-EAS/0.1"
 "Apple-iPad1C1/806.190"
 "Apple-iPhone3C3/805.200"
