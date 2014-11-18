@@ -76,6 +76,8 @@ def is_known_browser(browser_data):
 	#generic mainline browsers
 	if (" Generic" in browser_data['ua_browser']): out = False
 	if ("Default" in browser_data['ua_browser']): out = False
+	if (" Generic" in browser_data['ua_comment']): out = False
+	if ("Default" in browser_data['ua_comment']): out = False
 	return out
 
 #
