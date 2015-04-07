@@ -8,39 +8,8 @@ David Shpritz. The data is provcided by the Broser Capabilities Project. The par
 http://browscap.org/
 http://pypi.python.org/pypi/pybrowscap/
 
-All fields in the browscap file are included
+All fields in the browscap file are included, plus one additional field:
 
-ua_activexcontrols=true/false  
-ua_agentid=The unique ID of the user agent in the BrowsCapCSV  
-ua_alpha=true/false  
-ua_aolversion=AOL version, or 0 if not applicable  
-ua_backgroundsounds=true/false  
-ua_beta=true/false  
-ua_browser=The browser family: FireFox, Chrome, IE, etc  
-ua_comment=Browser + version  
-ua_cookies=true/false  
-ua_crawler=true/false - true if the UA is some Web Crawler  
-ua_cssversion=CSS version support  
-ua_frames=true/false  
-ua_iframes=true/false  
-ua_ismobiledevice=true/false  
-ua_issyndicationreader=true/false  
-ua_javaapplets=true/false  
-ua_javascript=true/false  
-ua_litemode <-- I don't know what this means  
-ua_majorver   
-ua_masterparent <-- I don't know what this means  
-ua_minorver  
-ua_parent <-- I don't know what this means  
-ua_platform=Operating system and version. Win7, etc  
-ua_platform_version=The OS version, not the friendly name. Win7 is 6.1  
-ua_propertyname=The original browscap string which matched the UA  
-ua_tables=true/false  
-ua_vbscript=true/false  
-ua_version=Major.Minor version  
-ua_win16=true/false  
-ua_win32=true/false  
-ua_win64=true/false  
 ua_fromcache=True if this record was read from cache, false if from the browscap file
 
 # Installation #
@@ -79,8 +48,10 @@ The cache file, browscap_lite.csv, is checked first, speeding up subsequent sear
 # Blacklist file #
 The optional file, blacklist.txt, contains a list of UA strings, one per line, which should not be checked. This is good for managing custom or blatantly forged UA strings that you don't want to waste time going to the main browscap file for, since they'll always return default/generic.
 
+<pre>
 CHANGE LOG  
 20130607 v1: 	Initial
 20140820 v2:	Better
 20150407   :	**delete your cache** new fields for browscap v6001
 		For the windows crowd, added extractUAStrings.ps1
+</pre>
