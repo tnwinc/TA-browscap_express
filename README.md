@@ -83,3 +83,4 @@ CHANGE LOG
 20130607 v1: 	Initial
 20140820 v2:	Better
 20150407   :	**delete your cache** new fields for browscap v6001
+		For the windows crowd, added extractUAStrings.ps1
